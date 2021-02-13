@@ -1,4 +1,5 @@
 let preprocessor = 'sass';
+let bootstrapOn = 'on';
 
 const { src, dest, parallel, series, watch } = require('gulp');
 const browserSync = require('browser-sync').create(); //Подключем browser-sync
@@ -22,34 +23,65 @@ function browsersync() {
   });
 }
 
-function scripts() {
-  return src([
-    'node_modules/jquery/dist/jquery.min.js', // подключение файла jquery
-    'node_modules/bootstrap/dist/js/bootstrap.min.js', // подключение bootstrap
-    'app/js/app.js', // подключение файла для пользовательских скриптов
-  ])
-    .pipe(concat('app.min.js')) // конкатинация файлов src в один файл
-    .pipe(uglify()) // функция которая сжимает скрипты
-    .pipe(dest('app/js/')) // выгружаем скрипты во внешний файл
-    .pipe(browserSync.stream());
-}
+if (bootstrapOn === 'on') {
+  function scripts() {
+    return src([
+      'node_modules/jquery/dist/jquery.min.js', // подключение файла jquery
+      'node_modules/bootstrap/dist/js/bootstrap.min.js', // подключение bootstrap
+      'app/js/app.js', // подключение файла для пользовательских скриптов
+    ])
+      .pipe(concat('app.min.js')) // конкатинация файлов src в один файл
+      .pipe(uglify()) // функция которая сжимает скрипты
+      .pipe(dest('app/js/')) // выгружаем скрипты во внешний файл
+      .pipe(browserSync.stream());
+  }
 
-function styles() {
-  return src([
-    'app/' + preprocessor + '/main.' + preprocessor + '', // подключение препроцессоров
-    'node_modules/bootstrap/dist/css/bootstrap.min.css', // подключение bootstrap
-    'node_modules/bootstrap/dist/css/bootstrap-reboot.min.css', // подключение bootstrap
-  ])
-    .pipe(eval(preprocessor)()) // конвертация файлов css
-    .pipe(concat('app.min.css')) // конкатинация файлов src в один файл
-    .pipe(
-      autoprefixer({ overrideBrowserslist: ['last 10 versions'], grid: true })
-    ) // включение autoprefixer
-    .pipe(
-      cleancss({ level: { 1: { specialComments: 0 } } /*format: 'beautify'*/ })
-    ) // включение и настройка очистки css
-    .pipe(dest('app/styles/')) // Папка выгрузки
-    .pipe(browserSync.stream()); // нужно мониторить стили;
+  function styles() {
+    return src([
+      'app/' + preprocessor + '/main.' + preprocessor + '', // подключение препроцессоров
+      'node_modules/bootstrap/dist/css/bootstrap.min.css', // подключение bootstrap
+      'node_modules/bootstrap/dist/css/bootstrap-reboot.min.css', // подключение bootstrap
+    ])
+      .pipe(eval(preprocessor)()) // конвертация файлов css
+      .pipe(concat('app.min.css')) // конкатинация файлов src в один файл
+      .pipe(
+        autoprefixer({ overrideBrowserslist: ['last 10 versions'], grid: true })
+      ) // включение autoprefixer
+      .pipe(
+        cleancss({
+          level: { 1: { specialComments: 0 } } /*format: 'beautify'*/,
+        })
+      ) // включение и настройка очистки css
+      .pipe(dest('app/styles/')) // Папка выгрузки
+      .pipe(browserSync.stream()); // нужно мониторить стили;
+  }
+} else {
+  function scripts() {
+    return src([
+      'node_modules/jquery/dist/jquery.min.js', // подключение файла jquery
+      'app/js/app.js', // подключение файла для пользовательских скриптов
+    ])
+      .pipe(concat('app.min.js')) // конкатинация файлов src в один файл
+      .pipe(uglify()) // функция которая сжимает скрипты
+      .pipe(dest('app/js/')) // выгружаем скрипты во внешний файл
+      .pipe(browserSync.stream());
+  }
+
+  function styles() {
+    return src('app/' + preprocessor + '/main.' + preprocessor + '')
+      .pipe(eval(preprocessor)()) // конвертация файлов css
+      .pipe(concat('app.min.css')) // конкатинация файлов src в один файл
+      .pipe(
+        autoprefixer({ overrideBrowserslist: ['last 10 versions'], grid: true })
+      ) // включение autoprefixer
+      .pipe(
+        cleancss({
+          level: { 1: { specialComments: 0 } } /*format: 'beautify'*/,
+        })
+      ) // включение и настройка очистки css
+      .pipe(dest('app/styles/')) // Папка выгрузки
+      .pipe(browserSync.stream()); // нужно мониторить стили;
+  }
 }
 
 function images() {
