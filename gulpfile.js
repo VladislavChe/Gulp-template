@@ -38,9 +38,9 @@ if (bootstrapOn === 'on') {
 
   function styles() {
     return src([
-      'app/' + preprocessor + '/main.' + preprocessor + '', // подключение препроцессоров
       'node_modules/bootstrap/dist/css/bootstrap.min.css', // подключение bootstrap
       'node_modules/bootstrap/dist/css/bootstrap-reboot.min.css', // подключение bootstrap
+      'app/' + preprocessor + '/main.' + preprocessor + '', // подключение препроцессоров
     ])
       .pipe(eval(preprocessor)()) // конвертация файлов css
       .pipe(concat('app.min.css')) // конкатинация файлов src в один файл
