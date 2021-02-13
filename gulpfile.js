@@ -1,0 +1,91 @@
+let preprocessor = 'sass';
+
+const { src, dest, parallel, series, watch } = require('gulp');
+const browserSync = require('browser-sync').create(); //Подключем browser-sync
+const concat = require('gulp-concat'); //Подключем concat к проекту
+const uglify = require('gulp-uglify-es').default; //Подключем gulp-uglify-es к проекту
+const sass = require('gulp-sass');
+const less = require('gulp-less');
+const autoprefixer = require('gulp-autoprefixer');
+const cleancss = require('gulp-clean-css');
+const imagemin = require('gulp-imagemin');
+const newer = require('gulp-newer');
+const del = require('del');
+
+function browsersync() {
+  //Инициализируем функцию
+  browserSync.init({
+    server: { baseDir: 'app/' }, // указываем папку откда сервер берет файлы сайта
+    notify: true, // отключение уведомлений
+    online: true, // включаем работу без сети wi-fi
+  });
+}
+
+function scripts() {
+  return src([
+    'node_modules/jquery/dist/jquery.min.js', // подключение файла jquery
+    'app/js/app.js', // подключение файла для пользовательских скриптов
+  ])
+    .pipe(concat('app.min.js')) // конкатинация файлов src в один файл
+    .pipe(uglify()) // функция которая сжимает скрипты
+    .pipe(dest('app/js/')) // выгружаем скрипты во внешний файл
+    .pipe(browserSync.stream());
+}
+
+function styles() {
+  return src('app/' + preprocessor + '/main.' + preprocessor + '')
+    .pipe(eval(preprocessor)()) // конвертация файлов css
+    .pipe(concat('app.min.css')) // конкатинация файлов src в один файл
+    .pipe(
+      autoprefixer({ overrideBrowserslist: ['last 10 versions'], grid: true })
+    ) // включение autoprefixer
+    .pipe(
+      cleancss({ level: { 1: { specialComments: 0 } } /*format: 'beautify'*/ })
+    ) // включение и настройка очистки css
+    .pipe(dest('app/css/')) // Папка выгрузки
+    .pipe(browserSync.stream()); // нужно чекать стили;
+}
+
+function images() {
+  return src('app/img/src/**/*') // папка откуда барть несжатые картинки
+    .pipe(newer('app/img/dest/')) // поиск не сжатых изображений сверка папок
+    .pipe(imagemin()) // активация сжатия
+    .pipe(dest('app/img/dest/')); // папка куда выгружать сжатые картинки
+}
+
+function cleanimg() {
+  return del('app/img/dest/**/*', { force: true }); // очистка содержимого папки dest с изображениямм
+}
+
+function cleandist() {
+  return del('dist/**/*', { force: true }); // очистка содержимого папки dest с изображениямм
+}
+
+function buildcopy() {
+  return src(
+    [
+      'app/css/**/*.min.css',
+      'app/js/**/*.min.js',
+      'app/img/dest/**/*',
+      'app/**/*.html',
+    ],
+    { base: 'app' }
+  ).pipe(dest('dist'));
+}
+
+function startWatch() {
+  // Функция следит за обновлениями файлов
+  watch('app/**/' + preprocessor + '/**/*', styles); // настройка отслеживания стилей в любых файлах
+  watch(['app/**/*.js', '!app/**/*.min.js'], scripts); // выбираем все js файлы нашего проекта кроме файлов min.js
+  watch('app/**/*.html').on('change', browserSync.reload); // мониторинг html разметки
+  watch('app/img/src/**/*', images); // мониторинг изображений
+}
+
+exports.browsersync = browsersync; // экспорт для функции browsersync в task
+exports.scripts = scripts; // экспорт для функции scripts в task
+exports.styles = styles; // экспорт для функции styles в task
+exports.images = images; // экспорт для функции images в task
+exports.cleanimg = cleanimg; // экспорт для функции cleanimg в task
+exports.build = series(cleandist, styles, scripts, images, buildcopy); // экспорт для функции cleanimg в task
+
+exports.default = parallel(styles, scripts, browsersync, startWatch);
