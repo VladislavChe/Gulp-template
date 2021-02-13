@@ -13,5 +13,8 @@ gulp cleanimgsrc
 5) Удалить сжатые изображения из конечной папки dest
 gulp cleanimg
 
-6) Собрать проект
+6) Собрать проект в папку dist
 gulp build
+
+7) Удалить собранный проект из папки dist
+gulp cleandist
