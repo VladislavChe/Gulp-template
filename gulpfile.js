@@ -25,6 +25,7 @@ function browsersync() {
 function scripts() {
   return src([
     'node_modules/jquery/dist/jquery.min.js', // подключение файла jquery
+    'node_modules/bootstrap/dist/js/bootstrap.min.js', // подключение bootstrap
     'app/js/app.js', // подключение файла для пользовательских скриптов
   ])
     .pipe(concat('app.min.js')) // конкатинация файлов src в один файл
@@ -34,7 +35,11 @@ function scripts() {
 }
 
 function styles() {
-  return src('app/' + preprocessor + '/main.' + preprocessor + '')
+  return src([
+    'app/' + preprocessor + '/main.' + preprocessor + '', // подключение препроцессоров
+    'node_modules/bootstrap/dist/css/bootstrap.min.css', // подключение bootstrap
+    'node_modules/bootstrap/dist/css/bootstrap-reboot.min.css', // подключение bootstrap
+  ])
     .pipe(eval(preprocessor)()) // конвертация файлов css
     .pipe(concat('app.min.css')) // конкатинация файлов src в один файл
     .pipe(
