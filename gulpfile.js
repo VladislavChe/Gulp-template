@@ -6,6 +6,7 @@ const concat = require('gulp-concat'); //Подключем concat к проек
 const uglify = require('gulp-uglify-es').default; //Подключем gulp-uglify-es к проекту
 const sass = require('gulp-sass');
 const less = require('gulp-less');
+const css = require('gulp-css');
 const autoprefixer = require('gulp-autoprefixer');
 const cleancss = require('gulp-clean-css');
 const imagemin = require('gulp-imagemin');
@@ -42,8 +43,8 @@ function styles() {
     .pipe(
       cleancss({ level: { 1: { specialComments: 0 } } /*format: 'beautify'*/ })
     ) // включение и настройка очистки css
-    .pipe(dest('app/css/')) // Папка выгрузки
-    .pipe(browserSync.stream()); // нужно чекать стили;
+    .pipe(dest('app/styles/')) // Папка выгрузки
+    .pipe(browserSync.stream()); // нужно мониторить стили;
 }
 
 function images() {
@@ -57,14 +58,18 @@ function cleanimg() {
   return del('app/img/dest/**/*', { force: true }); // очистка содержимого папки dest с изображениямм
 }
 
+function cleanimgsrc() {
+  return del('app/img/src/**/*', { force: true }); // очистка содержимого папки dest с изображениямм
+}
+
 function cleandist() {
-  return del('dist/**/*', { force: true }); // очистка содержимого папки dest с изображениямм
+  return del('dist/**/*', { force: true }); // очистка собранного проекта из папки dist
 }
 
 function buildcopy() {
   return src(
     [
-      'app/css/**/*.min.css',
+      'app/styles/**/*.min.css',
       'app/js/**/*.min.js',
       'app/img/dest/**/*',
       'app/**/*.html',
@@ -86,6 +91,8 @@ exports.scripts = scripts; // экспорт для функции scripts в ta
 exports.styles = styles; // экспорт для функции styles в task
 exports.images = images; // экспорт для функции images в task
 exports.cleanimg = cleanimg; // экспорт для функции cleanimg в task
+exports.cleanimgsrc = cleanimgsrc; // экспорт для функции cleanimg в task
+exports.cleandist = cleandist; // экспорт для функции cleandist в task
 exports.build = series(cleandist, styles, scripts, images, buildcopy); // экспорт для функции cleanimg в task
 
 exports.default = parallel(styles, scripts, browsersync, startWatch);
