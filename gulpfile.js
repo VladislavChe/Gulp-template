@@ -1,4 +1,4 @@
-let preprocessor = 'sass';
+let preprocessor = 'scss';
 let bootstrapOn = 'on';
 
 const { src, dest, parallel, series, watch } = require('gulp');
@@ -6,6 +6,7 @@ const browserSync = require('browser-sync').create(); //Подключем brows
 const concat = require('gulp-concat'); //Подключем concat к проекту
 const uglify = require('gulp-uglify-es').default; //Подключем gulp-uglify-es к проекту
 const sass = require('gulp-sass');
+const scss = require('gulp-sass');
 const less = require('gulp-less');
 const css = require('gulp-css');
 const autoprefixer = require('gulp-autoprefixer');
