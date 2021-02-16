@@ -106,7 +106,7 @@ function cleandist() {
 }
 
 function pugConvert() {
-  return src('app/**/*.pug') // путь ко всем файлам pug
+  return src('app/*.pug') // путь ко всем файлам pug
     .pipe(
       pug({
         pretty: true,
