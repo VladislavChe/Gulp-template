@@ -14,6 +14,7 @@ const cleancss = require('gulp-clean-css');
 const imagemin = require('gulp-imagemin');
 const newer = require('gulp-newer');
 const del = require('del');
+const pug = require('gulp-pug');
 
 function browsersync() {
   //Инициализируем функцию
@@ -104,6 +105,16 @@ function cleandist() {
   return del('dist/**/*', { force: true }); // очистка собранного проекта из папки dist
 }
 
+function pugConvert() {
+  return src('app/**/*.pug') // путь ко всем файлам pug
+    .pipe(
+      pug({
+        pretty: true,
+      })
+    ) // конвертация
+    .pipe(dest('app')); // путь в папку выгрузки сконвертированного файла
+}
+
 function buildcopy() {
   return src(
     [
@@ -120,6 +131,7 @@ function startWatch() {
   // Функция следит за обновлениями файлов
   watch('app/**/' + preprocessor + '/**/*', styles); // настройка отслеживания стилей в любых файлах
   watch(['app/**/*.js', '!app/**/*.min.js'], scripts); // выбираем все js файлы нашего проекта кроме файлов min.js
+  watch('app/**/*.pug').on('change', pugConvert); // мониторинг html разметки
   watch('app/**/*.html').on('change', browserSync.reload); // мониторинг html разметки
   watch('app/img/src/**/*', images); // мониторинг изображений
 }
@@ -131,6 +143,14 @@ exports.images = images; // экспорт для функции images в task
 exports.cleanimg = cleanimg; // экспорт для функции cleanimg в task
 exports.cleanimgsrc = cleanimgsrc; // экспорт для функции cleanimg в task
 exports.cleandist = cleandist; // экспорт для функции cleandist в task
-exports.build = series(cleandist, styles, scripts, images, buildcopy); // экспорт для функции cleanimg в task
+exports.pugConvert = pugConvert; // экспорт для функции pugConvert в task
+exports.build = series(
+  cleandist,
+  pugConvert,
+  styles,
+  scripts,
+  images,
+  buildcopy
+); // экспорт для функции cleanimg в task
 
 exports.default = parallel(styles, scripts, browsersync, startWatch);
