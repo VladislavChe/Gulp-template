@@ -22,6 +22,7 @@ function browsersync() {
     server: { baseDir: 'app/' }, // указываем папку откда сервер берет файлы сайта
     notify: true, // отключение уведомлений
     online: true, // включаем работу без сети wi-fi
+    index: 'page-a.html',
   });
 }
 
@@ -106,7 +107,7 @@ function cleandist() {
 }
 
 function pugConvert() {
-  return src('app/*.pug') // путь ко всем файлам pug
+  return src('app/pug/*.pug') // путь ко всем файлам pug
     .pipe(
       pug({
         pretty: true,
