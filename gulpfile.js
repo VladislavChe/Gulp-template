@@ -15,6 +15,7 @@ const imagemin = require('gulp-imagemin');
 const newer = require('gulp-newer');
 const del = require('del');
 const pug = require('gulp-pug');
+const notify = require('gulp-notify');
 
 function browsersync() {
   //Инициализируем функцию
@@ -116,6 +117,21 @@ function pugConvert() {
     .pipe(dest('app')); // путь в папку выгрузки сконвертированного файла
 }
 
+function gulpNotyfy() {
+  return src('app/' + preprocessor + '/main.' + preprocessor + '')
+    .pipe(
+      sass().on(
+        'error',
+        notify.onError({
+          message: '<%= error.message %>',
+          title: 'Sass Error!',
+        })
+      )
+    )
+    .pipe(gulp.dest('css/'))
+    .pipe(notify('SASS - хорошая работа!'));
+}
+
 function buildcopy() {
   return src(
     [
@@ -145,6 +161,8 @@ exports.cleanimg = cleanimg; // экспорт для функции cleanimg в
 exports.cleanimgsrc = cleanimgsrc; // экспорт для функции cleanimg в task
 exports.cleandist = cleandist; // экспорт для функции cleandist в task
 exports.pugConvert = pugConvert; // экспорт для функции pugConvert в task
+exports.gulpNotyfy = gulpNotyfy; // экспорт для функции gulpNotyfy в task
+
 exports.build = series(
   cleandist,
   pugConvert,

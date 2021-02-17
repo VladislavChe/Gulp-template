@@ -1,12 +1,9 @@
-doctype html
-html(lang="en")
-  head
-    meta(charset="UTF-8")
-    meta(http-equiv="X-UA-Compatible", content="IE=edge")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Page A
-  body 
-    include includes/menu.pug
-    h1 This is page A 
-    p Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae, voluptate sunt a alias aliquid facere dolor, vero dolores consequuntur rerum magni quam molestiae culpa veniam temporibus harum architecto voluptas voluptatems
-    include includes/test.pug
+extends includes/head.pug 
+block title 
+  title Page A
+block css
+  link(rel="stylesheet", href="styles/app.min.css")
+block content
+  include includes/menu.pug
+  h1 This is page A 
+  include includes/test.pug
