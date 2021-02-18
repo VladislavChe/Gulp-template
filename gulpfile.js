@@ -114,22 +114,8 @@ function pugConvert() {
         pretty: true,
       })
     ) // конвертация
+    .on('error', notify.onError('Error: <%= error.message %>'))
     .pipe(dest('app')); // путь в папку выгрузки сконвертированного файла
-}
-
-function gulpNotyfy() {
-  return src('app/' + preprocessor + '/main.' + preprocessor + '')
-    .pipe(
-      sass().on(
-        'error',
-        notify.onError({
-          message: '<%= error.message %>',
-          title: 'Sass Error!',
-        })
-      )
-    )
-    .pipe(gulp.dest('css/'))
-    .pipe(notify('SASS - хорошая работа!'));
 }
 
 function buildcopy() {
@@ -161,7 +147,6 @@ exports.cleanimg = cleanimg; // экспорт для функции cleanimg в
 exports.cleanimgsrc = cleanimgsrc; // экспорт для функции cleanimg в task
 exports.cleandist = cleandist; // экспорт для функции cleandist в task
 exports.pugConvert = pugConvert; // экспорт для функции pugConvert в task
-exports.gulpNotyfy = gulpNotyfy; // экспорт для функции gulpNotyfy в task
 
 exports.build = series(
   cleandist,
