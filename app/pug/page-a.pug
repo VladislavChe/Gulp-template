@@ -1,8 +1,7 @@
 extends includes/head.pug 
 block title 
   title Page A
-block css
-  link(rel="stylesheet", href="styles/app.min.css")
+prepend css
 block content
   include includes/menu.pug
   h1 This is page A 
