@@ -1,7 +1,7 @@
 // Nav-Menu
 //-- not show text
-ul
-  li Menu 1
-  li Menu 2 
-  li Menu 3
-  li Menu 4
+-var nav={'Menu 1':'index1.html','Menu 2':'index2.html','Menu 3':'index3.html'}
+
+ul 
+  each linkPath, linkName in nav
+    li: a(href=linkPath) #{linkName}

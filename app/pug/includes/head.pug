@@ -1,3 +1,5 @@
+include mixins.pug
+
 doctype html
 html(lang="en")
   head
@@ -6,6 +8,6 @@ html(lang="en")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     block title
     block css
-      <link rel="stylesheet" href="styles/app.min.css">
+      +styles('style.css','component/style.csss','component2/style.csss')
   body 
     block content

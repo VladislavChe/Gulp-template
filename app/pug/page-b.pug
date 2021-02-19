@@ -2,7 +2,8 @@ extends includes/head.pug
 block title 
   title Page B
 prepend css
-  link(rel="stylesheet", href="js/app.min.js")
+  +styles('style2.css')
 block content 
   include includes/menu.pug
   h1 This is page B 
+  +addSomeText('text1','text2','text3')
