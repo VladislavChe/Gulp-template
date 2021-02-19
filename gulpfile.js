@@ -1,5 +1,5 @@
 let preprocessor = 'scss';
-let bootstrapOn = 'on';
+let bootstrapOn = 'off';
 
 const { src, dest, parallel, series, watch } = require('gulp');
 const browserSync = require('browser-sync').create(); //Подключем browser-sync
@@ -23,7 +23,7 @@ function browsersync() {
     server: { baseDir: 'app/' }, // указываем папку откда сервер берет файлы сайта
     notify: true, // отключение уведомлений
     online: true, // включаем работу без сети wi-fi
-    index: 'page-a.html',
+    index: 'index.html',
   });
 }
 
@@ -32,7 +32,7 @@ if (bootstrapOn === 'on') {
     return src([
       'node_modules/jquery/dist/jquery.min.js', // подключение файла jquery
       'node_modules/bootstrap/dist/js/bootstrap.min.js', // подключение bootstrap
-      'app/js/app.js', // подключение файла для пользовательских скриптов
+      'app/js/mainjs/**/*.js', // подключение файла для пользовательских скриптов
     ])
       .pipe(concat('app.min.js')) // конкатинация файлов src в один файл
       .pipe(uglify()) // функция которая сжимает скрипты
@@ -63,7 +63,7 @@ if (bootstrapOn === 'on') {
   function scripts() {
     return src([
       'node_modules/jquery/dist/jquery.min.js', // подключение файла jquery
-      'app/js/app.js', // подключение файла для пользовательских скриптов
+      'app/js/mainjs/**/*.js', // подключение файла для пользовательских скриптов
     ])
       .pipe(concat('app.min.js')) // конкатинация файлов src в один файл
       .pipe(uglify()) // функция которая сжимает скрипты
@@ -123,7 +123,8 @@ function buildcopy() {
     [
       'app/styles/**/*.min.css',
       'app/js/**/*.min.js',
-      'app/img/dest/**/*',
+      // 'app/img/dest/**/*',
+      'app/img/src/**/*',
       'app/**/*.html',
     ],
     { base: 'app' }
@@ -153,7 +154,7 @@ exports.build = series(
   pugConvert,
   styles,
   scripts,
-  images,
+  // images,
   buildcopy
 ); // экспорт для функции cleanimg в task
 
