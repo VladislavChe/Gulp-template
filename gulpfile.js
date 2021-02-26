@@ -1,161 +1,242 @@
-let preprocessor = 'scss';
-let bootstrapOn = 'off';
+const { src, dest, parallel, series, watch, task } = require('gulp');
+const sass = require('gulp-sass'),
+  browserSync = require('browser-sync'),
+  concat = require('gulp-concat'),
+  uglify = require('gulp-uglify-es').default,
+  cssnano = require('gulp-cssnano'),
+  concatCss = require('gulp-concat-css'),
+  csso = require('gulp-csso'),
+  del = require('del'),
+  duration = require('gulp-duration'),
+  imagemin = require('gulp-imagemin'),
+  imageminJR = require('imagemin-jpeg-recompress'),
+  pngquant = require('imagemin-pngquant'),
+  newer = require('gulp-newer'),
+  cache = require('gulp-cache'),
+  autoprefixer = require('gulp-autoprefixer'),
+  babel = require('gulp-babel'),
+  pug = require('gulp-pug'),
+  svgSprite = require('gulp-svg-sprite'),
+  svgmin = require('gulp-svgmin'),
+  cheerio = require('gulp-cheerio'),
+  replace = require('gulp-replace'),
+  zip = require('gulp-zip');
 
-const { src, dest, parallel, series, watch } = require('gulp');
-const browserSync = require('browser-sync').create(); //Подключем browser-sync
-const concat = require('gulp-concat'); //Подключем concat к проекту
-const uglify = require('gulp-uglify-es').default; //Подключем gulp-uglify-es к проекту
-const sass = require('gulp-sass');
-const scss = require('gulp-sass');
-const less = require('gulp-less');
-const css = require('gulp-css');
-const autoprefixer = require('gulp-autoprefixer');
-const cleancss = require('gulp-clean-css');
-const imagemin = require('gulp-imagemin');
-const newer = require('gulp-newer');
-const del = require('del');
-const pug = require('gulp-pug');
-const notify = require('gulp-notify');
-
-function browsersync() {
-  //Инициализируем функцию
-  browserSync.init({
-    server: { baseDir: 'app/' }, // указываем папку откда сервер берет файлы сайта
-    notify: true, // отключение уведомлений
-    online: true, // включаем работу без сети wi-fi
-    index: 'index.html',
+task('browser-sync', function () {
+  browserSync({
+    server: {
+      baseDir: 'app',
+    },
+    notify: true,
+    online: true,
   });
-}
+});
 
-if (bootstrapOn === 'on') {
-  function scripts() {
-    return src([
-      'node_modules/jquery/dist/jquery.min.js', // подключение файла jquery
-      'node_modules/bootstrap/dist/js/bootstrap.min.js', // подключение bootstrap
-      'app/js/mainjs/**/*.js', // подключение файла для пользовательских скриптов
-    ])
-      .pipe(concat('app.min.js')) // конкатинация файлов src в один файл
-      .pipe(uglify()) // функция которая сжимает скрипты
-      .pipe(dest('app/js/')) // выгружаем скрипты во внешний файл
-      .pipe(browserSync.stream());
-  }
+//take our foulders from sass
+task('sassLibs', function () {
+  return src('app/libs/**/**/*.css')
+    .pipe(concatCss('_all-libs.scss'))
+    .pipe(dest('app/sass/main'));
+});
 
-  function styles() {
-    return src([
-      'node_modules/bootstrap/dist/css/bootstrap.min.css', // подключение bootstrap
-      'node_modules/bootstrap/dist/css/bootstrap-reboot.min.css', // подключение bootstrap
-      'app/' + preprocessor + '/main.' + preprocessor + '', // подключение препроцессоров
-    ])
-      .pipe(eval(preprocessor)()) // конвертация файлов css
-      .pipe(concat('app.min.css')) // конкатинация файлов src в один файл
-      .pipe(
-        autoprefixer({ overrideBrowserslist: ['last 10 versions'], grid: true })
-      ) // включение autoprefixer
-      .pipe(
-        cleancss({
-          level: { 1: { specialComments: 0 } } /*format: 'beautify'*/,
-        })
-      ) // включение и настройка очистки css
-      .pipe(dest('app/styles/')) // Папка выгрузки
-      .pipe(browserSync.stream()); // нужно мониторить стили;
-  }
-} else {
-  function scripts() {
-    return src([
-      'node_modules/jquery/dist/jquery.min.js', // подключение файла jquery
-      'app/js/mainjs/**/*.js', // подключение файла для пользовательских скриптов
-    ])
-      .pipe(concat('app.min.js')) // конкатинация файлов src в один файл
-      .pipe(uglify()) // функция которая сжимает скрипты
-      .pipe(dest('app/js/')) // выгружаем скрипты во внешний файл
-      .pipe(browserSync.stream());
-  }
+task('sassTemp', function () {
+  return src('app/sass/temp/**/*.+(scss|sass)')
+    .pipe(concat('_all-temp.scss'))
+    .pipe(dest('app/sass/main'))
+    .pipe(browserSync.reload({ stream: true }));
+});
 
-  function styles() {
-    return src('app/' + preprocessor + '/main.' + preprocessor + '')
-      .pipe(eval(preprocessor)()) // конвертация файлов css
-      .pipe(concat('app.min.css')) // конкатинация файлов src в один файл
-      .pipe(
-        autoprefixer({ overrideBrowserslist: ['last 10 versions'], grid: true })
-      ) // включение autoprefixer
-      .pipe(
-        cleancss({
-          level: { 1: { specialComments: 0 } } /*format: 'beautify'*/,
-        })
-      ) // включение и настройка очистки css
-      .pipe(dest('app/styles/')) // Папка выгрузки
-      .pipe(browserSync.stream()); // нужно мониторить стили;
-  }
-}
+task('sassPages', function () {
+  return src('app/sass/pages/**/*.+(scss|sass)')
+    .pipe(concat('_all-pages.scss'))
+    .pipe(dest('app/sass/main'))
+    .pipe(browserSync.reload({ stream: true }));
+});
 
-function images() {
-  return src('app/img/src/**/*') // папка откуда барть несжатые картинки
-    .pipe(newer('app/img/dest/')) // поиск не сжатых изображений сверка папок
-    .pipe(imagemin()) // активация сжатия
-    .pipe(dest('app/img/dest/')); // папка куда выгружать сжатые картинки
-}
+task('sassBlocks', function () {
+  return src('app/sass/blocks/**/*.+(scss|sass)')
+    .pipe(concat('_all-blocks.scss'))
+    .pipe(dest('app/sass/main'))
+    .pipe(browserSync.reload({ stream: true }));
+});
 
-function cleanimg() {
-  return del('app/img/dest/**/*', { force: true }); // очистка содержимого папки dest с изображениямм
-}
+task('sassMain', function () {
+  return src('app/sass/main/**/*.+(scss|sass)')
+    .pipe(sass())
+    .pipe(
+      autoprefixer(['last 10 versions', '> 1%', 'ie 11'], { cascade: true })
+    )
+    .pipe(dest('app/css'))
+    .pipe(browserSync.reload({ stream: true }));
+});
 
-function cleanimgsrc() {
-  return del('app/img/src/**/*', { force: true }); // очистка содержимого папки dest с изображениямм
-}
+task('jsLibs', function () {
+  return (
+    src(['app/libs/**/**/*.js'])
+      .pipe(concat('libs.min.js'))
+      /*
+    .pipe(babel({
+			presets: ['@babel/env']
+		}))
+    */
+      .pipe(uglify())
+      .pipe(dest('app/js'))
+  );
+});
 
-function cleandist() {
-  return del('dist/**/*', { force: true }); // очистка собранного проекта из папки dist
-}
-
-function pugConvert() {
-  return src('app/pug/*.pug') // путь ко всем файлам pug
+task('pug', function () {
+  return src('app/pug/pages/**/*.pug')
     .pipe(
       pug({
         pretty: true,
       })
-    ) // конвертация
-    .on('error', notify.onError('Error: <%= error.message %>'))
-    .pipe(dest('app')); // путь в папку выгрузки сконвертированного файла
-}
+    )
+    .pipe(dest('app/'))
+    .pipe(browserSync.stream());
+});
 
-function buildcopy() {
-  return src(
-    [
-      'app/styles/**/*.min.css',
-      'app/js/**/*.min.js',
-      // 'app/img/dest/**/*',
-      'app/img/src/**/*',
-      'app/**/*.html',
-    ],
-    { base: 'app' }
-  ).pipe(dest('dist'));
-}
+task('html', function () {
+  return src('app/*.html').pipe(browserSync.reload({ stream: true }));
+});
 
-function startWatch() {
-  // Функция следит за обновлениями файлов
-  watch('app/**/' + preprocessor + '/**/*', styles); // настройка отслеживания стилей в любых файлах
-  watch(['app/**/*.js', '!app/**/*.min.js'], scripts); // выбираем все js файлы нашего проекта кроме файлов min.js
-  watch('app/**/*.pug').on('change', pugConvert); // мониторинг html разметки
-  watch('app/**/*.html').on('change', browserSync.reload); // мониторинг html разметки
-  watch('app/img/src/**/*', images); // мониторинг изображений
-}
+/*
+task('svg', function() {
+	return src('app/img/svg/icons/*.svg')
+		.pipe(svgmin({
+			js2svg: {
+				pretty: true
+			}
+		}))
+		.pipe(cheerio({
+			run: function ($) {
+				$('[fill]').removeAttr('fill');
+				$('[stroke]').removeAttr('stroke');
+				$('[style]').removeAttr('style');
+			},
+			parserOptions: {xmlMode: true}
+		}))
+		.pipe(replace('&gt;', '>'))
+		.pipe(svgSprite({
+			mode: {
+				symbol: {
+					sprite: "sprite.svg"
+				}
+			}
+		}))
+		.pipe(dest('app/img/svg'));
+});
+*/
 
-exports.browsersync = browsersync; // экспорт для функции browsersync в task
-exports.scripts = scripts; // экспорт для функции scripts в task
-exports.styles = styles; // экспорт для функции styles в task
-exports.images = images; // экспорт для функции images в task
-exports.cleanimg = cleanimg; // экспорт для функции cleanimg в task
-exports.cleanimgsrc = cleanimgsrc; // экспорт для функции cleanimg в task
-exports.cleandist = cleandist; // экспорт для функции cleandist в task
-exports.pugConvert = pugConvert; // экспорт для функции pugConvert в task
+//BEGIN gulp watch
+task('watch', function () {
+  watch('app/sass/temp/**/*.+(scss|sass)', series('sassTemp', 'sassMain'));
+  watch('app/sass/pages/**/*.+(scss|sass)', series('sassPages', 'sassMain'));
+  watch('app/sass/blocks/**/*.+(scss|sass)', series('sassBlocks', 'sassMain'));
 
-exports.build = series(
-  cleandist,
-  pugConvert,
-  styles,
-  scripts,
-  // images,
-  buildcopy
-); // экспорт для функции cleanimg в task
+  watch('app/sass/tools/**/*.+(scss|sass)', parallel('sassMain'));
+  watch('app/sass/main/**/*.+(scss|sass)', parallel('sassMain'));
 
-exports.default = parallel(styles, scripts, browsersync, startWatch);
+  watch('app/pug/**/*.pug', parallel('pug'));
+
+  //watch('app/img/svg/icons/*.svg', parallel('svg'));
+
+  watch(
+    'app/libs/**/*{js,css,sass,scss}',
+    series('sassLibs', 'jsLibs', 'html')
+  );
+  watch('app/js/**/*.js', parallel('html'));
+});
+
+task('default', parallel('watch', 'browser-sync', 'jsLibs', 'sassLibs'));
+//END gulp watch
+
+//BEGIN gulp build
+task('build', async function () {
+  del.sync(['dist/*', '!dist/img']);
+
+  let buildCss = src('app/css/**/*')
+    .pipe(csso())
+    .pipe(cssnano())
+    .pipe(dest('dist/css'));
+
+  let buildFonts = src('app/fonts/**/*').pipe(dest('dist/fonts'));
+
+  //let buildDocs = src('app/docs/**/*')
+  //	.pipe(dest('dist/docs'));
+
+  let buildJs = src(['app/js/**/*', '!app/js/main.js']).pipe(dest('dist/js'));
+
+  let unglifyJs = src('app/js/main.js')
+    /*
+    .pipe(babel({
+			presets: ['@babel/env']
+		}))
+    */
+    .pipe(uglify())
+    .pipe(dest('dist/js'));
+
+  let buildHtml = src('app/*.html').pipe(dest('dist'));
+
+  /*
+	let buildPhp = src('app/*.php')
+		.pipe(dest('dist'));
+    */
+
+  //let buildHtaccess = src('app/.htaccess').pipe(dest('dist'));
+
+  //let buildSvg = src('app/img/svg/**/*')
+  //	.pipe(dest('dist/img/svg'));
+
+  let imgDist = 'dist/img';
+  let builImg = src(['app/img/**/*', '!app/img/sprites/**/*'])
+    .pipe(newer(imgDist))
+    // .pipe(imagemin([
+    // 	imagemin.gifsicle({interlaced: true}),
+    // 	imagemin.jpegtran({progressive: true}),
+    // 	imageminJR({loops: 1, quality: "low"}),
+    // 	imagemin.svgo(),
+    // 	imagemin.optipng({optimizationLevel: 5}),
+    // 	pngquant({quality: "88-100", speed: 5})
+    // ]))
+    .pipe(duration('gulp build'))
+    .pipe(dest(imgDist));
+});
+//END gulp build
+
+//BEGIN gulp img
+task('img', async function () {
+  let builImg = src(['app/img/**/*', '!app/img/sprites/**/*'])
+    /*
+	.pipe(cache(imagemin({
+		interlaced: true,
+		progressive: true,
+		svgoPlugins: [{removeViewBox: false}],
+		use: [pngquant()]
+	})))*/
+
+    .pipe(
+      imagemin([
+        imagemin.gifsicle({ interlaced: true }),
+        imagemin.jpegtran({ progressive: true }),
+        imageminJR({ loops: 1, quality: 'low' }),
+        imagemin.svgo(),
+        imagemin.optipng({ optimizationLevel: 5 }),
+        pngquant({ quality: '88-100', speed: 5 }),
+      ])
+    )
+    .pipe(duration('gulp img'))
+    .pipe(dest('dist/img'));
+});
+//END gulp img
+
+task('zip', async function () {
+  return src(['dist/**/*', 'dist/.*']).pipe(zip('dist.zip')).pipe(dest('./'));
+});
+
+task('clean', async function () {
+  return del.sync('dist');
+});
+
+task('clear', async function () {
+  return cache.clearAll();
+});
