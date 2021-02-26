@@ -1,0 +1,55 @@
+address,
+blockquote,
+figure,
+figcaption,
+main,
+details,
+fieldset {
+  display: block;
+  border: 0;
+  font-style: normal;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  transition: all $time;
+  outline: none !important;
+  border: none;
+
+  &:hover {
+    outline: none;
+  }
+
+  &:active {
+    outline: none;
+    transition: all.1s ease;
+  }
+}
+
+button {
+  outline: none;
+
+  &:active {
+    outline: none;
+    transition: all.1s ease;
+  }
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+body *,
+body *:before,
+body *:after {
+  box-sizing: border-box;
+}
