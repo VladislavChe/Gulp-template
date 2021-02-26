@@ -22,41 +22,48 @@
     <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/favicon-180x180.png">
   </head>
   <link rel="stylesheet" href="css/main.css">
-  <title>Document</title>
+  <title>Index</title>
   <body>
-    <div class="header">I'm header 2</div>
+    <!--include ../blocks/header-->
     <main>
-      <!--BEGIN title-->
-      <div class="title" data-anch_s="title">
-        <section class="wrap">
-          <h2>Lorem ipsum dolor123123</h2>
-          <div class="title_main">
-            <h3 class="title_titl">Испытай будущее прямо сейчас!</h3>
-            <p>VR Pass — клуб виртуальной реальности в Москве. Мы поможем погрузиться в виртуальный мир и получить незабываемые ощущения!</p>
-            <div class="title_links"><a class="gb-butt gbpop" href="#">Записаться на игру</a><a class="gb-butt __grey" href="#">Смотреть видеоsdf</a></div>
+      <header class="header" id="particles-js">
+        <div class="burger-menu" id="burger-menu">
+          <div class="container">
+            <div class="burger-menu-inner-wrapp">
+              <div class="logo" id="logo">
+                <div class="logo-wrapp-img d-flex" id="logo-wrapp"><span class="logo-letters">CH</span></div>
+              </div>
+              <div class="hamburger close-burger" id="close-burger"><span></span></div>
+            </div>
+            <ul class="menu-list">
+              <li class="menu-list__item"><a class="menu-list__link" href="index.html">Home</a></li>
+              <li class="menu-list__item"><a class="menu-list__link" href="about.html">About</a></li>
+              <li class="menu-list__item"><a class="menu-list__link" href="#">Portfolio</a></li>
+              <li class="menu-list__item"></li>
+            </ul>
           </div>
-          <div class="title_main">
-            <h3 class="title_titl">Испытай будущее прямо сейчас!</h3>
-            <p>VR Pass — клуб виртуальной реальности в Москве. Мы поможем погрузиться в виртуальный мир и получить незабываемые ощущения!</p>
-            <div class="title_links"><a class="gb-butt gbpop" href="#">Записаться на игруфыва</a><a class="gb-butt __grey" href="#">Смотреть видео</a></div>
-          </div>
-        </section>
-        <!--END title-->
-      </div>
-      <!--BEGIN work-->
-      <div class="work">
-        <div class="wrap">
-          <section class="work_main">
-            <header>
-              <h2 class="work_titl">Испытай будущее прямо сейчас!</h2>
-            </header>
-            <p>VR Pass — клуб виртуальной реальности в Москве. Мы поможем погрузиться в виртуальный мир и получить незабываемые ощущения!</p>
-            <footer class="work_links"><a class="gb-butt gbpop" href="#">Записаться на игруsadf</a><a class="gb-butt __grey" href="#">Смотреть видеоasdf</a></footer>
-          </section>
         </div>
-      </div>
-      <!--END work
-      -->
+        <div class="container">
+          <div class="menu d-flex">
+            <div class="logo" id="logo">
+              <div class="logo-wrapp-img d-flex" id="logo-wrapp"><span class="logo-letters">CH</span></div>
+            </div>
+            <div class="hamburger pos-a" id="hamburger"><span></span></div>
+          </div>
+          <div class="name pos-a" id="name">
+            <h1 id="stuck">frontend developer</h1>
+            <h2 id="myname">Vladislav Cheremisin</h2>
+          </div>
+          <div class="social-links">
+            <ul class="social-links__list d-flex">
+              <li class="social-links__item"><a class="social-links__link" target="_blank" href="https://t.me/che_vladislav"><img class="social-links__img" src="img/src/mail.png" alt=""></a></li>
+              <li class="social-links__item"><a class="social-links__link" target="_blank" href="https://t.me/che_vladislav"><img class="social-links__img" src="img/src/vk.png" alt=""></a></li>
+              <li class="social-links__item"><a class="social-links__link" target="_blank" href="https://t.me/che_vladislav"><img class="social-links__img" src="img/src/facebook.png" alt=""></a></li>
+              <li class="social-links__item"><a class="social-links__link" target="_blank" href="https://t.me/che_vladislav"><img class="social-links__img" src="img/src/instagram.png" alt=""></a></li>
+            </ul>
+          </div>
+        </div>
+      </header>
     </main>
     <footer class="footer"></footer>
     <script src="js/libs.min.js"></script>
