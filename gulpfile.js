@@ -182,7 +182,7 @@ task('build', async function () {
 		.pipe(dest('dist'));
     */
 
-  let buildHtaccess = src('app/.htaccess').pipe(dest('dist'));
+  //let buildHtaccess = src('app/.htaccess').pipe(dest('dist'));
 
   //let buildSvg = src('app/img/svg/**/*')
   //	.pipe(dest('dist/img/svg'));
