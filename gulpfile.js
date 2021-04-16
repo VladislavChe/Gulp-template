@@ -28,7 +28,10 @@ task('browser-sync', function () {
       baseDir: 'app',
     },
     notify: true,
-    online: true,
+    online: false,
+    socket: {
+      domain: 'localhost:3000',
+    },
   });
 });
 
@@ -152,7 +155,7 @@ task('default', parallel('watch', 'browser-sync', 'jsLibs', 'sassLibs'));
 
 //BEGIN gulp build
 task('build', async function () {
-  del.sync(['dist/*', '!dist/img']);
+  del.sync(['dist/*']);
 
   let buildCss = src('app/css/**/*')
     .pipe(csso())
@@ -167,11 +170,11 @@ task('build', async function () {
   let buildJs = src(['app/js/**/*', '!app/js/main.js']).pipe(dest('dist/js'));
 
   let unglifyJs = src('app/js/main.js')
-    /*
-    .pipe(babel({
-			presets: ['@babel/env']
-		}))
-    */
+    .pipe(
+      babel({
+        presets: ['@babel/preset-env'],
+      })
+    )
     .pipe(uglify())
     .pipe(dest('dist/js'));
 
