@@ -1,0 +1,87 @@
+/*menu*/
+.menu {
+  justify-content: space-between;
+  width: 100%;
+  padding-top: 50px;
+  cursor: pointer;
+  /*Responsive-Start*/
+  @include media(576px) {
+    padding-top: 15px;
+  }
+  /*Responsive-End*/
+
+  /*logo-Start*/
+  &__logo {
+    display: flex;
+    border: 1px solid #c8c8c8;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    @include media(768px) {
+      width: 50px;
+      height: 50px;
+    }
+  }
+
+  &__logo-letters {
+    color: $mainColor;
+    transition: all 0.5s ease;
+    cursor: pointer;
+    &:hover {
+      transform: rotate(-35deg);
+      transition: all 0.5s ease;
+    }
+  }
+  /*logo-END*/
+
+  /*hamburger-Start*/
+  &__hamburger {
+    width: 50px;
+    height: 50px;
+    position: relative;
+    span {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      width: 30px;
+      height: 2px;
+      background: #c8c8c8;
+      margin-top: -1px;
+      transition: all 0.5s ease;
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 0;
+        width: 30px;
+        height: 2px;
+        background: #c8c8c8;
+        margin-top: -1px;
+        transition: all 0.5s ease;
+      }
+      &::before {
+        transform: translateY(-8px);
+        width: 20px;
+      }
+      &::after {
+        transform: translateY(8px);
+        width: 40px;
+      }
+    }
+    &:hover span {
+      width: 40px;
+      transition: all 0.5s ease;
+    }
+    &:hover span {
+      &::before {
+        width: 40px;
+        transition: all 0.5s ease;
+      }
+    }
+  }
+  /*hamburger-End*/
+}

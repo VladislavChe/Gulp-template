@@ -1,0 +1,149 @@
+body *,
+body *:before,
+body *:after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100vh;
+  background-color: #333;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  color: $textcolor;
+  font-size: 25px;
+  padding: 0;
+  margin: 0;
+}
+
+div,
+textarea,
+p,
+input,
+form,
+span,
+ul,
+li {
+  font-family: $font;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+}
+
+h1 {
+  @include media(992px) {
+    font-size: 35px;
+  }
+}
+
+address,
+blockquote,
+figure,
+figcaption,
+main,
+details,
+fieldset {
+  display: block;
+  border: 0;
+  font-style: normal;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  box-sizing: border-box;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  list-style-type: none;
+  border: none;
+  outline: none !important;
+  transition: all $time;
+  &:hover,
+  &:active {
+    text-decoration: none;
+    outline: none;
+    transition: all $time;
+  }
+}
+
+button,
+input {
+  display: block;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  list-style-type: none;
+  transition: all $time;
+  &:active,
+  &:hover,
+  &:focus {
+    outline: none;
+    transition: all $time;
+  }
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+li {
+  list-style-type: none;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 0 15px;
+}
+
+.d-flex {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+}
+
+.pos-a {
+  position: absolute;
+}
+
+.pos-rel {
+  position: relative;
+}
+
+.height {
+  height: 100vh;
+}
+
+h3 {
+  font-size: 25px;
+}
+
+/* BACKGROUND */
+#particles-js {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  background: #111111;
+  z-index: 1;
+}
