@@ -73,15 +73,16 @@ task('sassMain', function () {
     .pipe(browserSync.reload({ stream: true }));
 });
 
+//take our foulders from JS
 task('jsLibs', function () {
   return (
     src(['app/libs/**/**/*.js'])
       .pipe(concat('libs.min.js'))
       /*
-    .pipe(babel({
-			presets: ['@babel/env']
-		}))
-    */
+        .pipe(babel({
+          presets: ['@babel/env']
+        }))
+      */
       .pipe(uglify())
       .pipe(dest('app/js'))
   );
@@ -102,33 +103,38 @@ task('html', function () {
   return src('app/*.html').pipe(browserSync.reload({ stream: true }));
 });
 
-/*
-task('svg', function() {
-	return src('app/img/svg/icons/*.svg')
-		.pipe(svgmin({
-			js2svg: {
-				pretty: true
-			}
-		}))
-		.pipe(cheerio({
-			run: function ($) {
-				$('[fill]').removeAttr('fill');
-				$('[stroke]').removeAttr('stroke');
-				$('[style]').removeAttr('style');
-			},
-			parserOptions: {xmlMode: true}
-		}))
-		.pipe(replace('&gt;', '>'))
-		.pipe(svgSprite({
-			mode: {
-				symbol: {
-					sprite: "sprite.svg"
-				}
-			}
-		}))
-		.pipe(dest('app/img/svg'));
+//SVG
+task('svg', function () {
+  return src('app/img/svg/icons/*.svg')
+    .pipe(
+      svgmin({
+        js2svg: {
+          pretty: true,
+        },
+      })
+    )
+    .pipe(
+      cheerio({
+        run: function ($) {
+          $('[fill]').removeAttr('fill');
+          $('[stroke]').removeAttr('stroke');
+          $('[style]').removeAttr('style');
+        },
+        parserOptions: { xmlMode: true },
+      })
+    )
+    .pipe(replace('&gt;', '>'))
+    .pipe(
+      svgSprite({
+        mode: {
+          symbol: {
+            sprite: 'sprite.svg',
+          },
+        },
+      })
+    )
+    .pipe(dest('app/img/svg'));
 });
-*/
 
 //BEGIN gulp watch
 task('watch', function () {
@@ -141,7 +147,7 @@ task('watch', function () {
 
   watch('app/pug/**/*.pug', parallel('pug'));
 
-  //watch('app/img/svg/icons/*.svg', parallel('svg'));
+  watch('app/img/svg/icons/*.svg', parallel('svg'));
 
   watch(
     'app/libs/**/*{js,css,sass,scss}',
@@ -158,8 +164,10 @@ task('build', async function () {
   del.sync(['dist/*']);
 
   let buildCss = src('app/css/**/*')
+    /* OFF compile CSS 
     .pipe(csso())
     .pipe(cssnano())
+    */
     .pipe(dest('dist/css'));
 
   let buildFonts = src('app/fonts/**/*').pipe(dest('dist/fonts'));
@@ -175,7 +183,9 @@ task('build', async function () {
         presets: ['@babel/preset-env'],
       })
     )
+    /* OFF compile JS 
     .pipe(uglify())
+    */
     .pipe(dest('dist/js'));
 
   let buildHtml = src('app/*.html').pipe(dest('dist'));
@@ -187,8 +197,7 @@ task('build', async function () {
 
   //let buildHtaccess = src('app/.htaccess').pipe(dest('dist'));
 
-  //let buildSvg = src('app/img/svg/**/*')
-  //	.pipe(dest('dist/img/svg'));
+  let buildSvg = src('app/img/svg/**/*').pipe(dest('dist/img/svg'));
 
   let imgDist = 'dist/img';
   let builImg = src(['app/img/**/*', '!app/img/sprites/**/*'])
