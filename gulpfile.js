@@ -164,10 +164,8 @@ task('build', async function () {
   del.sync(['dist/*']);
 
   let buildCss = src('app/css/**/*')
-    /* OFF compile CSS 
     .pipe(csso())
     .pipe(cssnano())
-    */
     .pipe(dest('dist/css'));
 
   let buildFonts = src('app/fonts/**/*').pipe(dest('dist/fonts'));
@@ -183,9 +181,7 @@ task('build', async function () {
         presets: ['@babel/preset-env'],
       })
     )
-    /* OFF compile JS 
     .pipe(uglify())
-    */
     .pipe(dest('dist/js'));
 
   let buildHtml = src('app/*.html').pipe(dest('dist'));
@@ -193,7 +189,7 @@ task('build', async function () {
   /*
 	let buildPhp = src('app/*.php')
 		.pipe(dest('dist'));
-    */
+  */
 
   //let buildHtaccess = src('app/.htaccess').pipe(dest('dist'));
 
